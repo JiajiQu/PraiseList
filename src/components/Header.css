@@ -1,20 +1,86 @@
 .main-header {
   text-align: center;
-  padding: 3rem 0;
+  padding: 0 0 2rem;
   position: relative;
 }
 
+/* Hero Banner */
+.hero-banner-wrap {
+  position: relative;
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+}
+
+.hero-banner-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  opacity: 0.7;
+  filter: saturate(1.2);
+}
+
+.hero-banner-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Logo */
 .logo-container {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .main-header h1 {
-  font-size: 4rem;
-  line-height: 1.1;
+  font-size: 4.5rem;
+  line-height: 1;
   position: relative;
   z-index: 2;
+  letter-spacing: 0.05em;
+}
+
+.shield-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+  transition: var(--trans-smooth);
+}
+
+.shield-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.7));
+}
+
+.shield-left {
+  animation: float-left 3s ease-in-out infinite;
+}
+
+.shield-right {
+  animation: float-right 3s ease-in-out infinite;
+}
+
+@keyframes float-left {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes float-right {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
 }
 
 .glow-orb {
@@ -22,19 +88,21 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 150px;
-  height: 50px;
+  width: 200px;
+  height: 60px;
   background: var(--accent-blue);
-  opacity: 0.15;
-  filter: blur(40px);
+  opacity: 0.2;
+  filter: blur(50px);
   border-radius: 50%;
   z-index: 1;
 }
 
 .main-header p {
   color: var(--text-muted);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   max-width: 500px;
   margin: 0 auto;
   line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }

@@ -67,7 +67,7 @@
 .highlight-summoner {
   color: var(--accent-gold);
   font-weight: 700;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Teko', sans-serif;
 }
 
 .claim-form {
@@ -95,7 +95,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-full);
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Teko', sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: var(--trans-smooth);
