@@ -1,0 +1,40 @@
+.main-header {
+  text-align: center;
+  padding: 3rem 0;
+  position: relative;
+}
+
+.logo-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.main-header h1 {
+  font-size: 4rem;
+  line-height: 1.1;
+  position: relative;
+  z-index: 2;
+}
+
+.glow-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 50px;
+  background: var(--accent-blue);
+  opacity: 0.15;
+  filter: blur(40px);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.main-header p {
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}

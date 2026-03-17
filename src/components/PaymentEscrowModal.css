@@ -1,0 +1,80 @@
+.escrow-modal {
+  text-align: center;
+  max-width: 400px;
+}
+
+.escrow-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(56, 189, 248, 0.2);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.escrow-amount {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  margin-bottom: 2rem;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-mint));
+  width: 0%;
+}
+
+.animate-progress {
+  animation: fillProgress 3s ease-in-out forwards;
+}
+
+@keyframes fillProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.escrow-status {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  animation: pulse-op 1.5s infinite;
+}
+
+@keyframes pulse-op {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.skip-btn {
+  font-size: 0.8rem;
+  padding: 0.4rem 1rem;
+  opacity: 0.5;
+}
+
+.skip-btn:hover {
+  opacity: 1;
+}

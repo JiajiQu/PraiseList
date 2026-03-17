@@ -1,0 +1,139 @@
+.bounty-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse 2s infinite;
+}
+
+.bounty-badge.open {
+  background: rgba(251, 191, 36, 0.2);
+  color: var(--accent-gold);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.bounty-badge.claimed {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--accent-mint);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  animation: none;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.comment {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  color: var(--text-main);
+  padding: 0.5rem 0;
+  letter-spacing: 0.5px;
+}
+
+.card-footer:has(> *:only-child) {
+  justify-content: flex-end;
+}
+
+.claim-btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+}
+
+.claim-details {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 4px solid var(--accent-mint);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.claim-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.75rem;
+}
+
+.claimed-by {
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.claimed-by strong {
+  color: var(--accent-mint);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+}
+
+.claim-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.proof-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .proof-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.proof-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.proof-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.proof-image-link {
+  flex: 1;
+}
+
+.preview-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--accent-blue);
+  font-size: 0.85rem;
+  transition: var(--trans-fast);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-box:hover {
+  background: rgba(56, 189, 248, 0.05);
+  border-color: var(--accent-blue);
+  color: white;
+}
