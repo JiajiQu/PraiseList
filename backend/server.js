@@ -153,20 +153,94 @@ app.post('/api/create-payment-intent', async (req, res) => {
   }
 })
 
-// MODERATOR API - Approve claim and Trigger Payout
-app.post('/api/admin/approve-claim', async (req, res) => {
+// Simple admin auth middleware
+const adminAuth = (req, res, next) => {
+  const adminKey = req.headers['x-admin-key']
+  const expectedKey = process.env.ADMIN_KEY || 'praiselist-admin-2026'
+  if (adminKey !== expectedKey) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  next()
+}
+
+// Get all pending claims for admin review
+app.get('/api/admin/pending-claims', adminAuth, async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT * FROM praises WHERE status = 'pending_review' ORDER BY timestamp DESC`
+    )
+    const rows = result.rows.map(row => ({
+      ...row,
+      playerName: row.playername || row.playerName,
+      bountyAmount: row.bountyamount || row.bountyAmount,
+      claimDetails: row.claimername ? {
+        claimerName: row.claimername,
+        evidenceLink: row.evidencelink,
+        chatScreenshot: row.chatscreenshot,
+        claimedAt: row.claimedat
+      } : null
+    }))
+    res.json(rows)
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// Get all praises for admin overview
+app.get('/api/admin/all-praises', adminAuth, async (req, res) => {
+  try {
+    const result = await db.query(`SELECT * FROM praises ORDER BY timestamp DESC`)
+    const rows = result.rows.map(row => ({
+      ...row,
+      playerName: row.playername || row.playerName,
+      bountyAmount: row.bountyamount || row.bountyAmount,
+    }))
+    res.json(rows)
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// MODERATOR API - Approve claim
+app.post('/api/admin/approve-claim', adminAuth, async (req, res) => {
   const { praiseId } = req.body
   
   try {
-    // 1. Mark in DB as fully claimed
     await db.query(`UPDATE praises SET status = 'claimed' WHERE id = $1`, [praiseId])
-    
-    // 2. Real: Trigger Stripe Transfer (Requires connected accounts which is complex, 
-    // for this deployment we will just mark as claimed in DB and log it).
-    console.log(`Admin approved claim for ${praiseId}. In a full production app with Stripe Connect, this would trigger a transfer.`);
-    // await stripe.transfers.create({ amount: ..., destination: 'acct_123...' })
-    
-    res.json({ success: true, message: 'Claim approved. Payout must be handled manually.' })
+    console.log(`Admin approved claim for ${praiseId}.`);
+    res.json({ success: true, message: 'Claim approved.' })
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// MODERATOR API - Reject claim (reopen bounty)
+app.post('/api/admin/reject-claim', adminAuth, async (req, res) => {
+  const { praiseId } = req.body
+  
+  try {
+    await db.query(`
+      UPDATE praises 
+      SET status = 'open',
+          claimerName = NULL,
+          evidenceLink = NULL,
+          chatScreenshot = NULL,
+          claimedAt = NULL
+      WHERE id = $1
+    `, [praiseId])
+    console.log(`Admin rejected claim for ${praiseId}. Bounty reopened.`);
+    res.json({ success: true, message: 'Claim rejected. Bounty reopened.' })
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// MODERATOR API - Delete a praise
+app.post('/api/admin/delete-praise', adminAuth, async (req, res) => {
+  const { praiseId } = req.body
+  try {
+    await db.query(`DELETE FROM praises WHERE id = $1`, [praiseId])
+    res.json({ success: true })
   } catch (err) {
     return res.status(500).json({ error: err.message })
   }
@@ -215,3 +289,7 @@ app.post('/api/delete-praise', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`)
 })
+
+setInterval(() => {
+  console.log("Heartbeat - keeping event loop alive");
+}, 5000);

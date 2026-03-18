@@ -5,9 +5,18 @@ import PraiseForm from './components/PraiseForm'
 import PraiseFeed from './components/PraiseFeed'
 import BountyClaimModal from './components/BountyClaimModal'
 import StripePaymentModal from './components/StripePaymentModal'
+import AdminDashboard from './components/AdminDashboard'
 
 function App() {
   const [praises, setPraises] = useState([])
+
+  // Simple hash-based routing
+  const [page, setPage] = useState(window.location.hash === '#/admin' ? 'admin' : 'main')
+  useEffect(() => {
+    const onHash = () => setPage(window.location.hash === '#/admin' ? 'admin' : 'main')
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   // API Base URL from env or fallback to local
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
@@ -135,6 +144,11 @@ function App() {
     }
   }
 
+  // If on admin page, render admin dashboard
+  if (page === 'admin') {
+    return <AdminDashboard apiUrl={API_URL} />
+  }
+
   return (
     <div className="app-container">
       <Header />
@@ -171,6 +185,10 @@ function App() {
           apiUrl={API_URL}
         />
       )}
+
+      <footer className="admin-footer">
+        <a href="#/admin">Admin Dashboard</a>
+      </footer>
     </div>
   )
 }
