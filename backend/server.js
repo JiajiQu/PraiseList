@@ -171,6 +171,43 @@ app.post('/api/admin/approve-claim', async (req, res) => {
     return res.status(500).json({ error: err.message })
   }
 })
+// Upvote a praise
+app.post('/api/praises/:id/upvote', async (req, res) => {
+  try {
+    const result = await db.query(
+      `UPDATE praises SET upvotes = upvotes + 1 WHERE id = $1 RETURNING upvotes`,
+      [req.params.id]
+    )
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Praise not found' })
+    res.json({ success: true, upvotes: result.rows[0].upvotes })
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// Downvote a praise
+app.post('/api/praises/:id/downvote', async (req, res) => {
+  try {
+    const result = await db.query(
+      `UPDATE praises SET upvotes = GREATEST(upvotes - 1, 0) WHERE id = $1 RETURNING upvotes`,
+      [req.params.id]
+    )
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Praise not found' })
+    res.json({ success: true, upvotes: result.rows[0].upvotes })
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
+
+// Delete a praise
+app.delete('/api/praises/:id', async (req, res) => {
+  try {
+    await db.query(`DELETE FROM praises WHERE id = $1`, [req.params.id])
+    res.json({ success: true })
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`)

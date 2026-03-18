@@ -108,6 +108,25 @@ function App() {
     }, 3000)
   }
 
+  const handleVote = async (praiseId, direction) => {
+    const endpoint = direction === 'up' ? 'upvote' : 'downvote'
+    try {
+      const res = await fetch(`${API_URL}/api/praises/${praiseId}/${endpoint}`, {
+        method: 'POST'
+      })
+      const data = await res.json()
+      if (data.success) {
+        setPraises(currentPraises =>
+          currentPraises.map(p =>
+            p.id === praiseId ? { ...p, upvotes: data.upvotes } : p
+          )
+        )
+      }
+    } catch (err) {
+      console.error('Vote failed:', err)
+    }
+  }
+
   return (
     <div className="app-container">
       <Header />
@@ -121,6 +140,7 @@ function App() {
           <PraiseFeed 
             praises={praises} 
             onClaimBounty={handleOpenClaimModal}
+            onVote={handleVote}
           />
         </section>
       </main>

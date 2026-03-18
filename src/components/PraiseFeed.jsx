@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './PraiseFeed.css'
 
-export default function PraiseFeed({ praises, onClaimBounty }) {
+export default function PraiseFeed({ praises, onClaimBounty, onVote }) {
   const [filter, setFilter] = useState('')
   const [, setTick] = useState(0)
 
@@ -130,9 +130,23 @@ export default function PraiseFeed({ praises, onClaimBounty }) {
                     Claim ${praise.bountyAmount}
                   </button>
                 )}
-                <button className="upvote-btn">
-                  <span>👍</span> {praise.upvotes || 0}
-                </button>
+                <div className="vote-buttons">
+                  <button 
+                    className="vote-btn upvote" 
+                    onClick={() => onVote(praise.id, 'up')}
+                    title="Thumbs up"
+                  >
+                    <span>👍</span>
+                  </button>
+                  <span className="vote-count">{praise.upvotes || 0}</span>
+                  <button 
+                    className="vote-btn downvote" 
+                    onClick={() => onVote(praise.id, 'down')}
+                    title="Thumbs down"
+                  >
+                    <span>👎</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))
@@ -141,3 +155,4 @@ export default function PraiseFeed({ praises, onClaimBounty }) {
     </div>
   )
 }
+
