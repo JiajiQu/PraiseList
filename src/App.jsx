@@ -4,7 +4,7 @@ import Header from './components/Header'
 import PraiseForm from './components/PraiseForm'
 import PraiseFeed from './components/PraiseFeed'
 import BountyClaimModal from './components/BountyClaimModal'
-import PaymentEscrowModal from './components/PaymentEscrowModal'
+import StripePaymentModal from './components/StripePaymentModal'
 
 function App() {
   const [praises, setPraises] = useState([])
@@ -23,42 +23,39 @@ function App() {
   // State for handling the bounty claim modal
   const [claimingPraise, setClaimingPraise] = useState(null)
   
-  // State for handling the mock payment flow
-  const [escrowState, setEscrowState] = useState({ active: false, type: null, amount: 0, onComplete: null })
+  // State for handling the Stripe payment flow
+  const [paymentState, setPaymentState] = useState({ active: false, praise: null })
 
   const handleAddPraise = (newPraise) => {
-    // 1. Post to Backend
+    if (newPraise.bountyAmount > 0) {
+      // Has a bounty — show Stripe payment modal FIRST
+      setPaymentState({ active: true, praise: newPraise })
+    } else {
+      // No bounty — save immediately
+      savePraise(newPraise)
+    }
+  }
+
+  const savePraise = (praise) => {
     fetch(`${API_URL}/api/praises`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newPraise)
+      body: JSON.stringify(praise)
     }).catch(err => console.error(err))
 
-    // 2. Mock Stripe Payment & Update UI Optimistically
-    if (newPraise.bountyAmount > 0) {
-      // Simulate escrow deposit
-      setEscrowState({
-        active: true,
-        type: 'deposit',
-        amount: newPraise.bountyAmount,
-        onComplete: () => {
-          setPraises([newPraise, ...praises])
-          setEscrowState({ active: false, type: null, amount: 0, onComplete: null })
-        }
-      })
-      
-      // Auto complete the simulation after 3 seconds
-      setTimeout(() => {
-        setEscrowState(current => {
-          if (current.active && current.onComplete) {
-            current.onComplete()
-          }
-          return { active: false, type: null, amount: 0, onComplete: null }
-        })
-      }, 3000)
-    } else {
-      setPraises([newPraise, ...praises])
+    setPraises(current => [praise, ...current])
+  }
+
+  const handlePaymentSuccess = () => {
+    // Payment succeeded — now save the praise with 'open' bounty status
+    if (paymentState.praise) {
+      savePraise(paymentState.praise)
     }
+    setPaymentState({ active: false, praise: null })
+  }
+
+  const handlePaymentCancel = () => {
+    setPaymentState({ active: false, praise: null })
   }
 
   const handleOpenClaimModal = (praise) => {
@@ -70,42 +67,23 @@ function App() {
   }
 
   const handleSubmitClaim = (praiseId, claimDetails) => {
-    const praise = praises.find(p => p.id === praiseId)
     setClaimingPraise(null)
     
-    // 1. Post claim to backend
+    // Post claim to backend
     fetch(`${API_URL}/api/claims`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ praiseId, claimDetails })
     }).catch(err => console.error(err))
 
-    // 2. Simulate escrow release & Update UI Optimistically
-    setEscrowState({
-      active: true,
-      type: 'release',
-      amount: praise.bountyAmount,
-      onComplete: () => {
-        setPraises(currentPraises => 
-          currentPraises.map(p => 
-            p.id === praiseId 
-              ? { ...p, status: 'pending_review', claimDetails }
-              : p
-          )
-        )
-        setEscrowState({ active: false, type: null, amount: 0, onComplete: null })
-      }
-    })
-
-    // Auto complete the simulation after 3 seconds
-    setTimeout(() => {
-      setEscrowState(current => {
-        if (current.active && current.onComplete) {
-          current.onComplete()
-        }
-        return { active: false, type: null, amount: 0, onComplete: null }
-      })
-    }, 3000)
+    // Update UI optimistically
+    setPraises(currentPraises => 
+      currentPraises.map(p => 
+        p.id === praiseId 
+          ? { ...p, status: 'pending_review', claimDetails }
+          : p
+      )
+    )
   }
 
   // Track user votes in localStorage
@@ -184,11 +162,13 @@ function App() {
         />
       )}
 
-      {escrowState.active && (
-        <PaymentEscrowModal 
-          amount={escrowState.amount}
-          type={escrowState.type}
-          onComplete={escrowState.onComplete}
+      {paymentState.active && paymentState.praise && (
+        <StripePaymentModal 
+          amount={paymentState.praise.bountyAmount}
+          praiseId={paymentState.praise.id}
+          onSuccess={handlePaymentSuccess}
+          onCancel={handlePaymentCancel}
+          apiUrl={API_URL}
         />
       )}
     </div>

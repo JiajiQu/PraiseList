@@ -1,0 +1,94 @@
+.stripe-modal {
+  max-width: 460px;
+  text-align: center;
+}
+
+.stripe-modal .modal-header {
+  margin-bottom: 1.5rem;
+}
+
+.stripe-modal .modal-header h3 {
+  font-size: 1.8rem;
+  color: var(--accent-gold);
+  margin-bottom: 0.5rem;
+}
+
+.payment-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.highlight-amount {
+  color: var(--accent-gold);
+  font-family: 'Teko', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stripe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card-element-wrapper {
+  text-align: left;
+}
+
+.card-element-wrapper label {
+  display: block;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.card-element-container {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  transition: var(--trans-fast);
+}
+
+.card-element-container:focus-within {
+  border-color: var(--accent-mint);
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+}
+
+.payment-error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: var(--radius-sm);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.payment-actions .btn-primary {
+  min-width: 140px;
+}
+
+.payment-actions .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
+.stripe-disclaimer {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
