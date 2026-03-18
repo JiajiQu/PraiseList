@@ -108,9 +108,36 @@ function App() {
     }, 3000)
   }
 
+  // Track user votes in localStorage
+  const [userVotes, setUserVotes] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('praiseVotes') || '{}')
+    } catch { return {} }
+  })
+
+  const saveVotes = (votes) => {
+    setUserVotes(votes)
+    localStorage.setItem('praiseVotes', JSON.stringify(votes))
+  }
+
   const handleVote = async (praiseId, direction) => {
+    const currentVote = userVotes[praiseId]
+    
+    // Already voted in this direction — ignore
+    if (currentVote === direction) return
+
     const endpoint = direction === 'up' ? 'upvote' : 'downvote'
     try {
+      // If switching direction, undo the previous vote first
+      if (currentVote) {
+        const undoEndpoint = currentVote === 'up' ? 'downvote' : 'upvote'
+        await fetch(`${API_URL}/api/vote/${undoEndpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ praiseId })
+        })
+      }
+
       const res = await fetch(`${API_URL}/api/vote/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -123,6 +150,7 @@ function App() {
             p.id === praiseId ? { ...p, upvotes: data.upvotes } : p
           )
         )
+        saveVotes({ ...userVotes, [praiseId]: direction })
       }
     } catch (err) {
       console.error('Vote failed:', err)
@@ -143,6 +171,7 @@ function App() {
             praises={praises} 
             onClaimBounty={handleOpenClaimModal}
             onVote={handleVote}
+            userVotes={userVotes}
           />
         </section>
       </main>

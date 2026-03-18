@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './PraiseFeed.css'
 
-export default function PraiseFeed({ praises, onClaimBounty, onVote }) {
+export default function PraiseFeed({ praises, onClaimBounty, onVote, userVotes = {} }) {
   const [filter, setFilter] = useState('')
   const [, setTick] = useState(0)
 
@@ -132,17 +132,17 @@ export default function PraiseFeed({ praises, onClaimBounty, onVote }) {
                 )}
                 <div className="vote-buttons">
                   <button 
-                    className="vote-btn upvote" 
+                    className={`vote-btn upvote${userVotes[praise.id] === 'up' ? ' voted' : ''}`}
                     onClick={() => onVote(praise.id, 'up')}
-                    title="Thumbs up"
+                    title={userVotes[praise.id] === 'up' ? 'You upvoted this' : 'Thumbs up'}
                   >
                     <span>👍</span>
                   </button>
                   <span className="vote-count">{praise.upvotes || 0}</span>
                   <button 
-                    className="vote-btn downvote" 
+                    className={`vote-btn downvote${userVotes[praise.id] === 'down' ? ' voted' : ''}`}
                     onClick={() => onVote(praise.id, 'down')}
-                    title="Thumbs down"
+                    title={userVotes[praise.id] === 'down' ? 'You downvoted this' : 'Thumbs down'}
                   >
                     <span>👎</span>
                   </button>
