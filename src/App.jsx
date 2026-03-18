@@ -111,8 +111,10 @@ function App() {
   const handleVote = async (praiseId, direction) => {
     const endpoint = direction === 'up' ? 'upvote' : 'downvote'
     try {
-      const res = await fetch(`${API_URL}/api/praises/${praiseId}/${endpoint}`, {
-        method: 'POST'
+      const res = await fetch(`${API_URL}/api/vote/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ praiseId })
       })
       const data = await res.json()
       if (data.success) {

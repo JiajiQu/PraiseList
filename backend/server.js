@@ -172,11 +172,12 @@ app.post('/api/admin/approve-claim', async (req, res) => {
   }
 })
 // Upvote a praise
-app.post('/api/praises/:id/upvote', async (req, res) => {
+app.post('/api/vote/upvote', async (req, res) => {
+  const { praiseId } = req.body
   try {
     const result = await db.query(
       `UPDATE praises SET upvotes = upvotes + 1 WHERE id = $1 RETURNING upvotes`,
-      [req.params.id]
+      [praiseId]
     )
     if (result.rows.length === 0) return res.status(404).json({ error: 'Praise not found' })
     res.json({ success: true, upvotes: result.rows[0].upvotes })
@@ -186,11 +187,12 @@ app.post('/api/praises/:id/upvote', async (req, res) => {
 })
 
 // Downvote a praise
-app.post('/api/praises/:id/downvote', async (req, res) => {
+app.post('/api/vote/downvote', async (req, res) => {
+  const { praiseId } = req.body
   try {
     const result = await db.query(
       `UPDATE praises SET upvotes = GREATEST(upvotes - 1, 0) WHERE id = $1 RETURNING upvotes`,
-      [req.params.id]
+      [praiseId]
     )
     if (result.rows.length === 0) return res.status(404).json({ error: 'Praise not found' })
     res.json({ success: true, upvotes: result.rows[0].upvotes })
@@ -200,9 +202,10 @@ app.post('/api/praises/:id/downvote', async (req, res) => {
 })
 
 // Delete a praise
-app.delete('/api/praises/:id', async (req, res) => {
+app.post('/api/delete-praise', async (req, res) => {
+  const { praiseId } = req.body
   try {
-    await db.query(`DELETE FROM praises WHERE id = $1`, [req.params.id])
+    await db.query(`DELETE FROM praises WHERE id = $1`, [praiseId])
     res.json({ success: true })
   } catch (err) {
     return res.status(500).json({ error: err.message })
