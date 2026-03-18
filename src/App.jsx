@@ -185,10 +185,6 @@ function App() {
           apiUrl={API_URL}
         />
       )}
-
-      <footer className="admin-footer">
-        <a href="#/admin">Admin Dashboard</a>
-      </footer>
     </div>
   )
 }
